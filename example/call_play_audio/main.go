@@ -34,6 +34,13 @@ func main() {
 		envCfg.Port,
 	)
 
+	defer func() {
+		err := d.Close()
+		if err != nil {
+			panic(err)
+		}
+	}()
+
 	if err != nil {
 		panic(err)
 	}

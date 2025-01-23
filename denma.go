@@ -65,7 +65,12 @@ func NewDenma(
 		Logger().
 		Level(zerolog.WarnLevel)
 
-	ua, err := sipgo.NewUA()
+	ua, err := sipgo.NewUA(
+		sipgo.WithUserAgent(
+			fmt.Sprintf("denma_%s", extension),
+		),
+		sipgo.WithUserAgentHostname(domain),
+	)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package denma
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"os"
@@ -19,8 +20,8 @@ type Denma struct {
 	DomainSIP string
 	PortSIP   int64
 
-	UA    *sipgo.UserAgent
-	Diago *diago.Diago
+	ua *sipgo.UserAgent
+	dg *diago.Diago
 }
 
 type TransportOptions struct {
@@ -101,12 +102,12 @@ func NewDenma(
 		Password:  password,
 		DomainSIP: domain,
 		PortSIP:   port,
-		UA:        ua,
-		Diago:     dg,
+		ua:        ua,
+		dg:        dg,
 	}, nil
 }
 
-func (d *Denma) CallAndPlayAudio(ctx context.Context, calleeNumber string, audioFile string) (*CallResult, error) {
+func (d *Denma) CallAndPlayAudio(ctx context.Context, calleeNumber string, audioData []byte, mimeType string) (*CallResult, error) {
 
 	var uri sip.Uri
 	err := sip.ParseUri(
@@ -123,7 +124,7 @@ func (d *Denma) CallAndPlayAudio(ctx context.Context, calleeNumber string, audio
 	}
 
 	startTime := time.Now()
-	sess, err := d.Diago.Invite(
+	sess, err := d.dg.Invite(
 		ctx,
 		uri,
 		diago.InviteOptions{
@@ -151,10 +152,12 @@ func (d *Denma) CallAndPlayAudio(ctx context.Context, calleeNumber string, audio
 		return nil, err
 	}
 
-	// NOTE: able to trap callee hangup only use playfile
-	_, err = pb.PlayFile(
-		audioFile,
+	reader := bytes.NewReader(audioData)
+	_, err = pb.Play(
+		reader,
+		mimeType,
 	)
+
 	// error when stream audio and it close unexpectedly
 	if err != nil {
 		return &CallResult{
@@ -179,5 +182,5 @@ func (d *Denma) CallAndPlayAudio(ctx context.Context, calleeNumber string, audio
 }
 
 func (d *Denma) Close() error {
-	return d.UA.Close()
+	return d.ua.Close()
 }

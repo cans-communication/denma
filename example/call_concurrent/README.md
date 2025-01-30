@@ -1,0 +1,25 @@
+# Simple example for call and play audio
+
+1. Create .env
+```sh
+CALL_CONCURRENT_EXTENSION_0=
+CALL_CONCURRENT_EXTENSION_1=
+CALL_CONCURRENT_PASSWORD_0=
+CALL_CONCURRENT_PASSWORD_1=
+CALL_CONCURRENT_SIP_DOMAIN=
+CALL_CONCURRENT_SIP_PORT=
+CALL_CONCURRENT_CALLEE_NUMBER_0=
+CALL_CONCURRENT_CALLEE_NUMBER_1=
+CALL_CONCURRENT_AUDIO_FILE_PATH=
+```
+
+2. Export env by
+```sh
+export $(grep -v '^#' .env | xargs)
+```
+
+3. Run script
+```sh
+go run .
+```
+

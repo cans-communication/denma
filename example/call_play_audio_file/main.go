@@ -22,7 +22,15 @@ type EnvCfg struct {
 func main() {
 
 	var envCfg EnvCfg
-	err := envconfig.Process("CALL_EXAMPLE", &envCfg)
+	err := envconfig.Process("CALL_PLAY_FILE", &envCfg)
+	if err != nil {
+		panic(err)
+	}
+
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	audioData, err := os.ReadFile(envCfg.AudioFilePath)
 	if err != nil {
 		panic(err)
 	}
@@ -33,25 +41,15 @@ func main() {
 		envCfg.Domain,
 		envCfg.Port,
 	)
-
-	defer func() {
-		err := d.Close()
-		if err != nil {
-			panic(err)
-		}
-	}()
-
 	if err != nil {
 		panic(err)
 	}
 
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer cancel()
-
 	callResult, err := d.CallAndPlayAudio(
 		ctx,
 		envCfg.CalleeNumber,
-		envCfg.AudioFilePath,
+		audioData,
+		"audio/wav",
 	)
 	if err != nil {
 		panic(err)

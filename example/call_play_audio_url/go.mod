@@ -1,4 +1,4 @@
-module call_play_audio
+module call_play_audio_url
 
 go 1.23.4
 

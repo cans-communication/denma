@@ -1,6 +1,6 @@
 module github.com/cans-communication/denma
 
-go 1.23.4
+go 1.23.2
 
 require (
 	github.com/emiago/diago v0.13.0

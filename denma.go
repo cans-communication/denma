@@ -170,7 +170,12 @@ func (d *Denma) CallAndPlayAudio(ctx context.Context, calleeNumber string, audio
 
 	err = sess.Hangup(ctx)
 	if err != nil {
-		return nil, err
+		return &CallResult{
+			CalleeNumber: calleeNumber,
+			Status:       Answered,
+			Duration:     time.Since(startTime),
+			TalkTime:     time.Since(startTalkTime),
+		}, nil
 	}
 
 	return &CallResult{

@@ -189,3 +189,86 @@ func (d *Denma) CallAndPlayAudio(ctx context.Context, calleeNumber string, audio
 func (d *Denma) Close() error {
 	return d.ua.Close()
 }
+
+func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR string) (*CallResult, error) {
+
+	var uri sip.Uri
+	err := sip.ParseUri(
+		fmt.Sprintf(
+			"sip:%s@%s:%d",
+			calleeNumber,
+			d.DomainSIP,
+			d.PortSIP,
+		),
+		&uri,
+	)
+	if err != nil {
+
+		return nil, err
+	}
+
+	startTime := time.Now()
+
+	sess, err := d.dg.Invite(
+		ctx,
+		uri,
+		diago.InviteOptions{
+			Username: d.Extension,
+			Password: d.Password,
+		},
+	)
+
+	if err != nil {
+		return &CallResult{
+			CalleeNumber: calleeNumber,
+			Status:       MissedCall,
+			Duration:     time.Since(startTime),
+		}, nil
+	}
+
+	var referTo sip.Uri
+	err = sip.ParseUri(
+		fmt.Sprintf(
+			"sip:%s@%s:%d",
+			tranferIVR,
+			d.DomainSIP,
+			d.PortSIP,
+		),
+		&referTo,
+	)
+	if err != nil {
+
+		return nil, err
+	}
+
+	fmt.Println("Start Refer ...")
+	fmt.Println("State : ", sess.DialogSIP().LoadState())
+
+	err = sess.Refer(ctx, referTo)
+	if err != nil {
+		return nil, err
+	}
+
+	startTalkTime := time.Now()
+	err = sess.Ack(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = sess.Hangup(ctx)
+	if err != nil {
+		return &CallResult{
+			CalleeNumber: calleeNumber,
+			Status:       Answered,
+			Duration:     time.Since(startTime),
+			TalkTime:     time.Since(startTalkTime),
+		}, nil
+	}
+
+	return &CallResult{
+		CalleeNumber: calleeNumber,
+		Status:       Answered,
+		Duration:     time.Since(startTime),
+		TalkTime:     time.Since(startTalkTime),
+	}, nil
+}

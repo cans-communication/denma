@@ -242,7 +242,6 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 	}
 
 	fmt.Println("Start Refer ...")
-	fmt.Println("State : ", sess.DialogSIP().LoadState())
 
 	err = sess.Refer(ctx, referTo)
 	if err != nil {

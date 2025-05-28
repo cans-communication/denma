@@ -206,6 +206,19 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 
 		return nil, err
 	}
+	var referTo sip.Uri
+	err = sip.ParseUri(
+		fmt.Sprintf(
+			"sip:%s@%s:%d",
+			tranferIVR,
+			d.DomainSIP,
+			d.PortSIP,
+		),
+		&referTo,
+	)
+	if err != nil {
+		return nil, err
+	}
 
 	startTime := time.Now()
 
@@ -224,21 +237,6 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 			Status:       MissedCall,
 			Duration:     time.Since(startTime),
 		}, nil
-	}
-
-	var referTo sip.Uri
-	err = sip.ParseUri(
-		fmt.Sprintf(
-			"sip:%s@%s:%d",
-			tranferIVR,
-			d.DomainSIP,
-			d.PortSIP,
-		),
-		&referTo,
-	)
-	if err != nil {
-
-		return nil, err
 	}
 
 	err = sess.Refer(ctx, referTo)

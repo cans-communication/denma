@@ -203,7 +203,6 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 		&uri,
 	)
 	if err != nil {
-
 		return nil, err
 	}
 	var referTo sip.Uri

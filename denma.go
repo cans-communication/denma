@@ -241,8 +241,6 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 		return nil, err
 	}
 
-	fmt.Println("Start Refer ...")
-
 	err = sess.Refer(ctx, referTo)
 	if err != nil {
 		return nil, err
@@ -252,16 +250,6 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 	err = sess.Ack(ctx)
 	if err != nil {
 		return nil, err
-	}
-
-	err = sess.Hangup(ctx)
-	if err != nil {
-		return &CallResult{
-			CalleeNumber: calleeNumber,
-			Status:       Answered,
-			Duration:     time.Since(startTime),
-			TalkTime:     time.Since(startTalkTime),
-		}, nil
 	}
 
 	return &CallResult{

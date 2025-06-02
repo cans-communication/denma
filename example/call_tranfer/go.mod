@@ -1,14 +1,17 @@
-module github.com/cans-communication/denma
+module call_play_audio_file
 
-go 1.23.2
+go 1.23.4
+
+replace github.com/cans-communication/denma => ../../
 
 require (
-	github.com/emiago/diago v0.16.0
-	github.com/emiago/sipgo v0.32.1
-	github.com/rs/zerolog v1.33.0
+	github.com/cans-communication/denma v0.0.0-00010101000000-000000000000
+	github.com/kelseyhightower/envconfig v1.4.0
 )
 
 require (
+	github.com/emiago/diago v0.16.0 // indirect
+	github.com/emiago/sipgo v0.32.1 // indirect
 	github.com/go-audio/riff v1.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
@@ -20,6 +23,7 @@ require (
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/rtcp v1.2.14 // indirect
 	github.com/pion/rtp v1.8.9 // indirect
+	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b // indirect
 	github.com/zaf/g711 v1.4.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect

@@ -238,6 +238,11 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 		}, nil
 	}
 
+	err = sess.Ack(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	err = sess.Refer(ctx, referTo)
 	if err != nil {
 		return nil, err

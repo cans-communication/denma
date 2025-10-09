@@ -238,6 +238,13 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 		}, nil
 	}
 
+	defer func() {
+		err := sess.Close()
+		if err != nil {
+			fmt.Printf("close error due to %v\n", err)
+		}
+	}()
+
 	err = sess.Ack(ctx)
 	if err != nil {
 		return nil, err
@@ -250,6 +257,11 @@ func (d *Denma) TranferCall(ctx context.Context, calleeNumber string, tranferIVR
 
 	startTalkTime := time.Now()
 	err = sess.Ack(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = sess.Hangup(ctx)
 	if err != nil {
 		return nil, err
 	}
